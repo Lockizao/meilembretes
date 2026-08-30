@@ -16,5 +16,7 @@ COPY . .
 
 EXPOSE 8000
 
-# Roda as migrations e so entao sobe o servidor.
-CMD alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000
+# Roda as migrations e so entao sobe o servidor. Usa $PORT se a plataforma
+# de deploy injetar uma (ex. Render) - cai pra 8000 se nao (ex. docker-compose
+# local), sem precisar de dois Dockerfiles diferentes.
+CMD alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
