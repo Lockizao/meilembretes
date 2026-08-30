@@ -34,11 +34,20 @@ async def login(
 
     token = create_access_token(subject=user.email)
 
+    # Em producao, frontend e backend ficam em subdominios diferentes de
+    # onrender.com - que esta na Public Suffix List, entao o navegador trata
+    # isso como cross-site "de verdade". SameSite=Lax bloqueia o cookie em
+    # chamadas fetch/XHR cross-site (so libera em navegacao top-level), por
+    # isso o login "nao pegava": o POST /auth/login ate funcionava, mas o
+    # cookie nunca era reenviado nas chamadas seguintes. SameSite=None (que
+    # exige Secure=True, ja garantido por is_production) resolve isso; em dev
+    # local (mesma origem, http) mantemos Lax, que e mais restritivo/seguro e
+    # nao tem esse problema por nao ser cross-site.
     response.set_cookie(
         key=COOKIE_NAME,
         value=token,
         httponly=True,
-        samesite="lax",
+        samesite="none" if settings.is_production else "lax",
         secure=settings.is_production,
         max_age=settings.jwt_expire_minutes * 60,
         path="/",
@@ -49,6 +58,11 @@ async def login(
 
 @router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
 async def logout(response: Response) -> Response:
-    response.delete_cookie(key=COOKIE_NAME, path="/")
+    response.delete_cookie(
+        key=COOKIE_NAME,
+        path="/",
+        samesite="none" if settings.is_production else "lax",
+        secure=settings.is_production,
+    )
     response.status_code = status.HTTP_204_NO_CONTENT
     return response
