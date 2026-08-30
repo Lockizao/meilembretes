@@ -32,7 +32,10 @@ async def subscribe(
         existing.p256dh = body.keys.p256dh
         existing.auth = body.keys.auth
         existing.user_id = user.id
-        existing.last_used_at = datetime.now(timezone.utc)
+        # As colunas DateTime do banco sao "sem timezone" (naive) - Postgres
+        # recusa comparar/gravar um datetime timezone-aware nelas. Calcula o
+        # instante certo em UTC e descarta a tzinfo antes de gravar.
+        existing.last_used_at = datetime.now(timezone.utc).replace(tzinfo=None)
     else:
         subscription = PushSubscription(
             user_id=user.id,

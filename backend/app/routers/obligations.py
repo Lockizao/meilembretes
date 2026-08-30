@@ -113,7 +113,10 @@ async def patch_obligation(
             raise HTTPException(status_code=422, detail=f"status inválido: {body.status}")
         obligation.status = new_status
         if new_status == StatusObrigacao.CONCLUIDO:
-            obligation.concluido_em = datetime.now(timezone.utc)
+            # A coluna e DateTime "sem timezone" (naive) - Postgres recusa
+            # gravar um datetime timezone-aware nela. Calcula o instante
+            # certo em UTC e descarta a tzinfo antes de atribuir.
+            obligation.concluido_em = datetime.now(timezone.utc).replace(tzinfo=None)
         else:
             # Reverter pra PENDENTE (ex: marcou como recebido/pago por engano) limpa
             # a data de conclusao, pra nao deixar rastro de uma conclusao que foi desfeita.
