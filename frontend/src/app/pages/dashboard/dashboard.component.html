@@ -1,0 +1,337 @@
+<div class="page-heading-row">
+  <h1 class="section-heading"><mat-icon>insights</mat-icon> Resumo</h1>
+  <button mat-stroked-button (click)="startTour()">
+    <mat-icon>help_outline</mat-icon>
+    Como usar
+  </button>
+</div>
+
+<div class="summary-row">
+  <mat-card class="summary-card" data-tour="summary-proximo">
+    <mat-card-content>
+      <div class="summary-label">Próximo vencimento</div>
+      @if (proximoVencimento(); as prox) {
+        <div class="summary-value">{{ prox.data_vencimento | date: 'dd/MM/yyyy' }}</div>
+        <div class="summary-sub">{{ tipoLabel(prox.tipo) }}</div>
+      } @else {
+        <div class="summary-value">—</div>
+        <div class="summary-sub">Nada pendente 🎉</div>
+      }
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card
+    class="summary-card"
+    [class.summary-card--alert]="totalAtrasado() > 0"
+    data-tour="summary-atrasadas"
+  >
+    <mat-card-content>
+      <div class="summary-label">Atrasadas</div>
+      <div class="summary-value">{{ totalAtrasado() }}</div>
+      <div class="summary-sub">{{ totalAtrasado() === 0 ? 'Tudo em dia' : 'Precisam de atenção' }}</div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="summary-card" data-tour="summary-faturamento">
+    <mat-card-content>
+      <div class="summary-label">Faturamento {{ anoAtual }}</div>
+      @if (faturamento(); as fat) {
+        <div class="summary-value">{{ fat.total | currency: 'BRL' }}</div>
+        <div class="summary-sub">
+          <a routerLink="/faturamento">Ver detalhes</a>
+        </div>
+      } @else {
+        <div class="summary-value">—</div>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<h1 class="section-heading" data-tour="section-das"><mat-icon>event</mat-icon> DAS-MEI</h1>
+
+@if (showPushBanner()) {
+  <mat-card class="push-banner">
+    <mat-card-content>
+      <mat-icon>notifications_active</mat-icon>
+      <span>Ative as notificações para não esquecer o vencimento do DAS.</span>
+      <button
+        mat-flat-button
+        color="primary"
+        [disabled]="activatingPush()"
+        (click)="activatePush()"
+      >
+        Ativar notificações
+      </button>
+    </mat-card-content>
+  </mat-card>
+}
+
+@if (loading()) {
+  <div class="loading">
+    <mat-spinner diameter="32"></mat-spinner>
+  </div>
+} @else if (obligations().length === 0) {
+  <p>Nenhuma obrigação de DAS encontrada.</p>
+} @else {
+  <div class="obligations-list">
+    @for (obligation of obligations(); track obligation.id) {
+      <mat-card class="obligation-card">
+        <mat-card-content>
+          <div class="obligation-row">
+            <div>
+              <div class="competencia">Competência {{ obligation.competencia | date: 'MM/yyyy' }}</div>
+              <div class="vencimento">
+                Vencimento: {{ obligation.data_vencimento | date: 'dd/MM/yyyy' }}
+              </div>
+              @if (obligation.valor !== null) {
+                <div class="valor">{{ obligation.valor | currency: 'BRL' }}</div>
+              }
+            </div>
+            <span class="status-badge" [class]="statusClass(obligation.status)">
+              {{ statusLabel(obligation.status) }}
+            </span>
+          </div>
+
+          @if (obligation.status !== 'CONCLUIDO') {
+            <button
+              mat-stroked-button
+              color="primary"
+              [disabled]="updatingId() === obligation.id"
+              (click)="markAsPaid(obligation)"
+            >
+              Marcar como pago
+            </button>
+          } @else {
+            <button
+              mat-stroked-button
+              [disabled]="updatingId() === obligation.id"
+              (click)="revertDasToPending(obligation)"
+            >
+              Voltar para pendente
+            </button>
+          }
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+}
+
+<h1 class="section-title section-heading" data-tour="section-nf">
+  <mat-icon>receipt_long</mat-icon> Nota Fiscal (RT Intelligence)
+</h1>
+
+@if (nfLoading()) {
+  <div class="loading">
+    <mat-spinner diameter="32"></mat-spinner>
+  </div>
+} @else if (nfObligations().length === 0) {
+  <p>Nenhuma obrigação de emissão de NF encontrada.</p>
+} @else {
+  <div class="obligations-list">
+    @for (obligation of nfObligations(); track obligation.id) {
+      <mat-card class="obligation-card">
+        <mat-card-content>
+          <div class="obligation-row">
+            <div>
+              <div class="competencia">Competência {{ obligation.competencia | date: 'MM/yyyy' }}</div>
+              <div class="vencimento">
+                Emitir até: {{ obligation.data_vencimento | date: 'dd/MM/yyyy' }}
+              </div>
+              @if (obligation.valor !== null) {
+                <div class="valor">{{ obligation.valor | currency: 'BRL' }}</div>
+              }
+            </div>
+            <span class="status-badge" [class]="statusClass(obligation.status)">
+              {{ statusLabel(obligation.status) }}
+            </span>
+          </div>
+
+          <div class="obligation-actions">
+            <button mat-stroked-button (click)="toggleNfData(obligation)">
+              @if (expandedNfId() === obligation.id) {
+                Ocultar dados
+              } @else {
+                Ver dados para emitir
+              }
+            </button>
+            @if (obligation.status !== 'CONCLUIDO' && obligation.status !== 'CANCELADO') {
+              <button
+                mat-stroked-button
+                color="primary"
+                [disabled]="updatingId() === obligation.id"
+                (click)="markNfAsEmitted(obligation)"
+              >
+                Marcar como emitida
+              </button>
+              <button
+                mat-stroked-button
+                color="warn"
+                [disabled]="cancelingId() === obligation.id"
+                (click)="cancelarNf(obligation)"
+              >
+                Cancelar
+              </button>
+            } @else if (obligation.status === 'CONCLUIDO') {
+              <button
+                mat-stroked-button
+                [disabled]="updatingId() === obligation.id"
+                (click)="revertNfToPending(obligation)"
+              >
+                Voltar para pendente
+              </button>
+            }
+          </div>
+
+          @if (expandedNfId() === obligation.id) {
+            @if (loadingNfDataId() === obligation.id) {
+              <div class="loading">
+                <mat-spinner diameter="24"></mat-spinner>
+              </div>
+            } @else if (nfDataById()[obligation.id]; as nfData) {
+              <div class="nf-data-card">
+                <p><strong>Tomador:</strong> {{ nfData.tomador_razao_social ?? '(preencha em Configurações)' }}</p>
+                <p><strong>CNPJ:</strong> {{ nfData.tomador_cnpj ?? '(preencha em Configurações)' }}</p>
+                <p><strong>Descrição do serviço:</strong> {{ nfData.descricao_servico ?? '(preencha em Configurações)' }}</p>
+                <p>
+                  <strong>Valor:</strong>
+                  {{ nfData.valor !== null ? (nfData.valor | currency: 'BRL') : '(preencha em Configurações)' }}
+                </p>
+                <div class="nf-data-actions">
+                  <button mat-stroked-button (click)="copyNfData(nfData)">Copiar dados</button>
+                  <a mat-flat-button color="primary" [href]="nfData.portal_url" target="_blank" rel="noopener">
+                    Abrir nfse.gov.br
+                  </a>
+                </div>
+                <p class="nf-data-hint">
+                  A emissão é feita manualmente no portal — este app não envia nada ao governo, só deixa os dados prontos.
+                </p>
+              </div>
+            }
+          }
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+}
+
+<h1 class="section-title section-heading" data-tour="section-rt">
+  <mat-icon>payments</mat-icon> Recebimento (RT Intelligence)
+</h1>
+
+@if (rtLoading()) {
+  <div class="loading">
+    <mat-spinner diameter="32"></mat-spinner>
+  </div>
+} @else if (rtObligations().length === 0) {
+  <p>Nenhum recebimento previsto ainda — aparece aqui assim que você marcar uma NF como emitida.</p>
+} @else {
+  <div class="obligations-list">
+    @for (obligation of rtObligations(); track obligation.id) {
+      <mat-card class="obligation-card">
+        <mat-card-content>
+          <div class="obligation-row">
+            <div>
+              <div class="competencia">Competência {{ obligation.competencia | date: 'MM/yyyy' }}</div>
+              <div class="vencimento">
+                Previsto para: {{ obligation.data_vencimento | date: 'dd/MM/yyyy' }}
+              </div>
+              @if (obligation.valor !== null) {
+                <div class="valor">{{ obligation.valor | currency: 'BRL' }}</div>
+              }
+            </div>
+            <span class="status-badge" [class]="statusClass(obligation.status)">
+              {{ rtStatusLabel(obligation.status) }}
+            </span>
+          </div>
+
+          @if (obligation.status !== 'CONCLUIDO') {
+            <button
+              mat-stroked-button
+              color="primary"
+              [disabled]="updatingId() === obligation.id"
+              (click)="markRtAsReceived(obligation)"
+            >
+              Marcar como recebido
+            </button>
+          } @else {
+            <button
+              mat-stroked-button
+              [disabled]="updatingId() === obligation.id"
+              (click)="revertRtToPending(obligation)"
+            >
+              Voltar para pendente
+            </button>
+          }
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+}
+
+<h1 class="section-title section-heading" data-tour="section-dasn">
+  <mat-icon>description</mat-icon> Declaração DASN-SIMEI
+</h1>
+
+@if (dasnLoading()) {
+  <div class="loading">
+    <mat-spinner diameter="32"></mat-spinner>
+  </div>
+} @else if (dasnObligations().length === 0) {
+  <p>Nenhuma declaração pendente ainda.</p>
+} @else {
+  <div class="obligations-list">
+    @for (obligation of dasnObligations(); track obligation.id) {
+      <mat-card class="obligation-card">
+        <mat-card-content>
+          <div class="obligation-row">
+            <div>
+              <div class="competencia">Ano de referência: {{ obligation.competencia | date: 'yyyy' }}</div>
+              <div class="vencimento">
+                Prazo: {{ obligation.data_vencimento | date: 'dd/MM/yyyy' }}
+              </div>
+            </div>
+            <span class="status-badge" [class]="statusClass(obligation.status)">
+              {{ statusLabel(obligation.status) }}
+            </span>
+          </div>
+
+          <p class="nf-data-hint">
+            Faturamento do ano de referência: veja em <a routerLink="/faturamento">Faturamento</a> — some
+            só as NFs que já foram emitidas (não conta canceladas nem pendentes).
+          </p>
+
+          @if (obligation.status !== 'CONCLUIDO') {
+            <div class="obligation-actions">
+              <a
+                mat-stroked-button
+                color="primary"
+                href="https://www8.receita.fazenda.gov.br/SimplesNacional/Aplicacoes/ATSPO/dasnsimei.app/Identificacao"
+                target="_blank"
+                rel="noopener"
+              >
+                Abrir DASN-SIMEI
+              </a>
+              <button
+                mat-stroked-button
+                [disabled]="updatingId() === obligation.id"
+                (click)="markDasnAsDeclarada(obligation)"
+              >
+                Marcar como declarada
+              </button>
+            </div>
+          } @else {
+            <div class="obligation-actions">
+              <button
+                mat-stroked-button
+                [disabled]="updatingId() === obligation.id"
+                (click)="revertDasnToPending(obligation)"
+              >
+                Voltar para pendente
+              </button>
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+}

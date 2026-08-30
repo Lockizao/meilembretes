@@ -1,0 +1,105 @@
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: 32px;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.dias-antecedencia {
+  margin: 8px 0 16px;
+
+  label {
+    display: block;
+    font-size: 0.85em;
+    color: rgba(0, 0, 0, 0.6);
+    margin-bottom: 8px;
+  }
+}
+
+.chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.dia-chip {
+  display: inline-flex;
+  align-items: center;
+  background: #e8eaf6;
+  border-radius: 16px;
+  padding: 4px 4px 4px 12px;
+  font-size: 0.9em;
+
+  button {
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+
+    mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+
+.add-dia-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .small-field {
+    width: 120px;
+  }
+}
+
+.ativo-toggle {
+  display: block;
+  margin: 16px 0;
+}
+
+.actions {
+  margin-top: 8px;
+}
+
+.push-card {
+  margin-top: 16px;
+}
+
+.section-title {
+  margin-top: 32px;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  mat-icon {
+    color: var(--mat-sys-primary);
+  }
+}
+
+.page-heading-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+
+  .section-heading {
+    margin: 0;
+  }
+}
+
+.hint {
+  font-size: 0.85em;
+  color: rgba(0, 0, 0, 0.6);
+  margin-top: 0;
+}

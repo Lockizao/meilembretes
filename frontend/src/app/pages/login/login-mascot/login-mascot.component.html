@@ -1,0 +1,37 @@
+<div
+  class="mascot"
+  [class.covering]="passwordFocused()"
+  [class.peeking]="peeking()"
+>
+  <svg viewBox="0 0 200 170" class="mascot-svg" aria-hidden="true" focusable="false">
+    <ellipse class="mascot-shadow" cx="100" cy="160" rx="55" ry="8" />
+
+    <circle class="mascot-head" cx="100" cy="88" r="68" />
+    <circle class="mascot-cheek" cx="52" cy="106" r="10" />
+    <circle class="mascot-cheek" cx="148" cy="106" r="10" />
+
+    <g class="mascot-eye" transform="translate(68,82)">
+      <ellipse class="mascot-eye-white" rx="15" ry="18" />
+      <circle class="mascot-pupil" r="7" [attr.cx]="pupilOffset()" />
+    </g>
+    <g class="mascot-eye" transform="translate(132,82)">
+      <ellipse class="mascot-eye-white" rx="15" ry="18" />
+      <circle class="mascot-pupil" r="7" [attr.cx]="pupilOffset()" />
+    </g>
+
+    <path class="mascot-mouth" d="M80,122 Q100,134 120,122" />
+
+    <g class="mascot-hand mascot-hand-left">
+      <ellipse cx="30" cy="98" rx="24" ry="19" />
+      <circle cx="14" cy="82" r="8" />
+      <circle cx="30" cy="78" r="8" />
+      <circle cx="46" cy="82" r="8" />
+    </g>
+    <g class="mascot-hand mascot-hand-right">
+      <ellipse cx="170" cy="98" rx="24" ry="19" />
+      <circle cx="154" cy="82" r="8" />
+      <circle cx="170" cy="78" r="8" />
+      <circle cx="186" cy="82" r="8" />
+    </g>
+  </svg>
+</div>

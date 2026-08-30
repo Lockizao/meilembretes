@@ -1,0 +1,329 @@
+<div class="page-heading-row">
+  <h1 class="section-heading" data-tour="settings-das"><mat-icon>event</mat-icon> Configurações do DAS-MEI</h1>
+  <button mat-stroked-button (click)="startTour()">
+    <mat-icon>help_outline</mat-icon>
+    Como usar
+  </button>
+</div>
+
+@if (loading()) {
+  <div class="loading">
+    <mat-spinner diameter="32"></mat-spinner>
+  </div>
+} @else {
+  <mat-card>
+    <mat-card-content>
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Valor mensal (R$)</mat-label>
+          <input matInput type="number" step="0.01" formControlName="valor_mensal" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Dia do vencimento</mat-label>
+          <input matInput type="number" min="1" max="31" formControlName="dia_vencimento" />
+          @if (form.controls.dia_vencimento.invalid) {
+            <mat-error>Informe um dia entre 1 e 31.</mat-error>
+          }
+        </mat-form-field>
+
+        <div class="dias-antecedencia">
+          <label>Avisar com quantos dias de antecedência</label>
+          <div class="chips-row">
+            @for (control of diasAntecedencia.controls; track $index) {
+              <span class="dia-chip">
+                {{ control.value }} {{ control.value === 1 ? 'dia' : 'dias' }}
+                <button
+                  mat-icon-button
+                  type="button"
+                  (click)="removeDiaAntecedencia($index)"
+                  aria-label="Remover"
+                >
+                  <mat-icon>close</mat-icon>
+                </button>
+              </span>
+            }
+          </div>
+          <div class="add-dia-row">
+            <mat-form-field appearance="outline" class="small-field">
+              <mat-label>Dias antes</mat-label>
+              <input matInput type="number" min="0" [formControl]="novoDiaAntecedencia" />
+            </mat-form-field>
+            <button mat-stroked-button type="button" (click)="addDiaAntecedencia()">
+              Adicionar
+            </button>
+          </div>
+        </div>
+
+        <mat-slide-toggle formControlName="ativo" class="ativo-toggle">
+          Lembretes ativos
+        </mat-slide-toggle>
+
+        <div class="actions">
+          <button mat-flat-button color="primary" type="submit" [disabled]="saving()">
+            @if (saving()) {
+              <mat-spinner diameter="20"></mat-spinner>
+            } @else {
+              Salvar
+            }
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+}
+
+<h1 class="section-title section-heading" data-tour="settings-nf">
+  <mat-icon>receipt_long</mat-icon> Configurações da NF (RT Intelligence)
+</h1>
+
+@if (nfLoading()) {
+  <div class="loading">
+    <mat-spinner diameter="32"></mat-spinner>
+  </div>
+} @else {
+  <mat-card>
+    <mat-card-content>
+      <form [formGroup]="nfForm" (ngSubmit)="submitNf()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Razão social do tomador</mat-label>
+          <input matInput formControlName="tomador_razao_social" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>CNPJ do tomador</mat-label>
+          <input matInput formControlName="tomador_cnpj" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>E-mail do tomador (opcional)</mat-label>
+          <input matInput type="email" formControlName="tomador_email" />
+          @if (nfForm.controls.tomador_email.invalid) {
+            <mat-error>Informe um e-mail válido.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Descrição do serviço</mat-label>
+          <textarea matInput rows="3" formControlName="descricao_servico"></textarea>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Valor mensal (R$)</mat-label>
+          <input matInput type="number" step="0.01" formControlName="valor_mensal" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Dia de emissão da NF</mat-label>
+          <input matInput type="number" min="1" max="31" formControlName="dia_emissao" />
+          @if (nfForm.controls.dia_emissao.invalid) {
+            <mat-error>Informe um dia entre 1 e 31.</mat-error>
+          }
+        </mat-form-field>
+
+        <div class="dias-antecedencia">
+          <label>Avisar com quantos dias de antecedência</label>
+          <div class="chips-row">
+            @for (control of diasAntecedenciaNf.controls; track $index) {
+              <span class="dia-chip">
+                {{ control.value }} {{ control.value === 1 ? 'dia' : 'dias' }}
+                <button
+                  mat-icon-button
+                  type="button"
+                  (click)="removeDiaAntecedenciaNf($index)"
+                  aria-label="Remover"
+                >
+                  <mat-icon>close</mat-icon>
+                </button>
+              </span>
+            }
+          </div>
+          <div class="add-dia-row">
+            <mat-form-field appearance="outline" class="small-field">
+              <mat-label>Dias antes</mat-label>
+              <input matInput type="number" min="0" [formControl]="novoDiaAntecedenciaNf" />
+            </mat-form-field>
+            <button mat-stroked-button type="button" (click)="addDiaAntecedenciaNf()">
+              Adicionar
+            </button>
+          </div>
+        </div>
+
+        <mat-slide-toggle formControlName="ativo" class="ativo-toggle">
+          Lembretes ativos
+        </mat-slide-toggle>
+
+        <div class="actions">
+          <button mat-flat-button color="primary" type="submit" [disabled]="nfSaving()">
+            @if (nfSaving()) {
+              <mat-spinner diameter="20"></mat-spinner>
+            } @else {
+              Salvar
+            }
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+}
+
+<h1 class="section-title section-heading" data-tour="settings-rt">
+  <mat-icon>payments</mat-icon> Recebimento (RT Intelligence)
+</h1>
+
+@if (rtLoading()) {
+  <div class="loading">
+    <mat-spinner diameter="32"></mat-spinner>
+  </div>
+} @else {
+  <mat-card>
+    <mat-card-content>
+      <p class="hint">
+        Quando você marca uma NF como emitida, o app gera automaticamente um lembrete pra conferir se o pagamento caiu, com base no prazo abaixo.
+      </p>
+      <form [formGroup]="rtForm" (ngSubmit)="submitRt()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Prazo de pagamento (dias após a emissão da NF)</mat-label>
+          <input matInput type="number" min="1" formControlName="dias_prazo_pagamento" />
+          @if (rtForm.controls.dias_prazo_pagamento.invalid) {
+            <mat-error>Informe um número de dias maior que zero.</mat-error>
+          }
+        </mat-form-field>
+
+        <div class="dias-antecedencia">
+          <label>Avisar com quantos dias de antecedência</label>
+          <div class="chips-row">
+            @for (control of diasAntecedenciaRt.controls; track $index) {
+              <span class="dia-chip">
+                {{ control.value }} {{ control.value === 1 ? 'dia' : 'dias' }}
+                <button
+                  mat-icon-button
+                  type="button"
+                  (click)="removeDiaAntecedenciaRt($index)"
+                  aria-label="Remover"
+                >
+                  <mat-icon>close</mat-icon>
+                </button>
+              </span>
+            }
+          </div>
+          <div class="add-dia-row">
+            <mat-form-field appearance="outline" class="small-field">
+              <mat-label>Dias antes</mat-label>
+              <input matInput type="number" min="0" [formControl]="novoDiaAntecedenciaRt" />
+            </mat-form-field>
+            <button mat-stroked-button type="button" (click)="addDiaAntecedenciaRt()">
+              Adicionar
+            </button>
+          </div>
+        </div>
+
+        <mat-slide-toggle formControlName="ativo" class="ativo-toggle">
+          Lembretes ativos
+        </mat-slide-toggle>
+
+        <div class="actions">
+          <button mat-flat-button color="primary" type="submit" [disabled]="rtSaving()">
+            @if (rtSaving()) {
+              <mat-spinner diameter="20"></mat-spinner>
+            } @else {
+              Salvar
+            }
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+}
+
+<h1 class="section-title section-heading" data-tour="settings-dasn">
+  <mat-icon>description</mat-icon> Declaração DASN-SIMEI
+</h1>
+
+@if (dasnLoading()) {
+  <div class="loading">
+    <mat-spinner diameter="32"></mat-spinner>
+  </div>
+} @else {
+  <mat-card>
+    <mat-card-content>
+      <p class="hint">
+        Prazo fixo em lei: todo dia 31/05, referente ao faturamento do ano anterior. Não dá pra mudar a data, só a antecedência do lembrete.
+      </p>
+      <form [formGroup]="dasnForm" (ngSubmit)="submitDasn()">
+        <div class="dias-antecedencia">
+          <label>Avisar com quantos dias de antecedência</label>
+          <div class="chips-row">
+            @for (control of diasAntecedenciaDasn.controls; track $index) {
+              <span class="dia-chip">
+                {{ control.value }} {{ control.value === 1 ? 'dia' : 'dias' }}
+                <button
+                  mat-icon-button
+                  type="button"
+                  (click)="removeDiaAntecedenciaDasn($index)"
+                  aria-label="Remover"
+                >
+                  <mat-icon>close</mat-icon>
+                </button>
+              </span>
+            }
+          </div>
+          <div class="add-dia-row">
+            <mat-form-field appearance="outline" class="small-field">
+              <mat-label>Dias antes</mat-label>
+              <input matInput type="number" min="0" [formControl]="novoDiaAntecedenciaDasn" />
+            </mat-form-field>
+            <button mat-stroked-button type="button" (click)="addDiaAntecedenciaDasn()">
+              Adicionar
+            </button>
+          </div>
+        </div>
+
+        <mat-slide-toggle formControlName="ativo" class="ativo-toggle">
+          Lembretes ativos
+        </mat-slide-toggle>
+
+        <div class="actions">
+          <button mat-flat-button color="primary" type="submit" [disabled]="dasnSaving()">
+            @if (dasnSaving()) {
+              <mat-spinner diameter="20"></mat-spinner>
+            } @else {
+              Salvar
+            }
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+}
+
+<mat-card class="push-card" data-tour="settings-push">
+  <mat-card-header>
+    <mat-card-title>Notificações push</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    @if (!pushSupported()) {
+      <p>Este navegador não tem suporte a notificações push.</p>
+    } @else if (pushGranted()) {
+      <p>As notificações estão ativadas neste navegador.</p>
+      <button
+        mat-stroked-button
+        color="warn"
+        [disabled]="pushBusy()"
+        (click)="deactivatePush()"
+      >
+        Cancelar notificações
+      </button>
+    } @else {
+      <p>Ative as notificações para receber lembretes do vencimento do DAS.</p>
+      <button
+        mat-flat-button
+        color="primary"
+        [disabled]="pushBusy()"
+        (click)="activatePush()"
+      >
+        Ativar notificações push
+      </button>
+    }
+  </mat-card-content>
+</mat-card>

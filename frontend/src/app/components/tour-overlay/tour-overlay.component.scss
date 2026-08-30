@@ -1,0 +1,82 @@
+// A "camada de vidro" invisível que bloqueia clique em qualquer coisa da
+// tela real enquanto o tour está aberto (o próprio spotlight/dim é só
+// visual e não bloqueia nada sozinho - por isso essa camada existe).
+.tour-click-blocker {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+}
+
+// Escurece a tela inteira e "recorta" um buraco na posição do elemento em
+// destaque via box-shadow gigante - sem precisar de máscara/SVG.
+.tour-spotlight {
+  position: fixed;
+  z-index: 1001;
+  border-radius: 12px;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7);
+  pointer-events: none;
+  transition:
+    top 0.25s ease,
+    left 0.25s ease,
+    width 0.25s ease,
+    height 0.25s ease;
+}
+
+// Passos sem elemento em destaque (introdução/fechamento): só escurece tudo.
+.tour-dim {
+  position: fixed;
+  inset: 0;
+  z-index: 1001;
+  background: rgba(0, 0, 0, 0.7);
+  pointer-events: none;
+}
+
+.tour-card {
+  position: fixed;
+  z-index: 1002;
+  width: 320px;
+  max-width: calc(100vw - 32px);
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  transition:
+    top 0.25s ease,
+    left 0.25s ease,
+    bottom 0.25s ease;
+
+  &--centered {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.tour-card-progress {
+  font-size: 0.75em;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: rgba(0, 0, 0, 0.5);
+  margin-bottom: 4px;
+}
+
+.tour-card-title {
+  margin: 0 0 8px;
+  font-size: 1.1em;
+}
+
+.tour-card-description {
+  margin: 0 0 16px;
+  font-size: 0.9em;
+  color: rgba(0, 0, 0, 0.75);
+}
+
+.tour-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tour-card-spacer {
+  flex: 1 1 auto;
+}

@@ -1,0 +1,92 @@
+:host {
+  display: block;
+}
+
+.mascot {
+  width: 140px;
+  margin: 0 auto 8px;
+  animation: mascot-bob 4s ease-in-out infinite;
+}
+
+@keyframes mascot-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.mascot-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.mascot-shadow {
+  fill: rgba(0, 0, 0, 0.1);
+}
+
+.mascot-head {
+  fill: var(--mat-sys-primary, #3f51b5);
+}
+
+.mascot-cheek {
+  fill: rgba(255, 255, 255, 0.28);
+}
+
+.mascot-eye-white {
+  fill: #fff;
+}
+
+.mascot-pupil {
+  fill: #26324a;
+  transition: cx 0.15s ease-out;
+}
+
+.mascot-mouth {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.65);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.mascot-hand {
+  fill: var(--mat-sys-primary-container, #dee0ff);
+  stroke: var(--mat-sys-primary, #3f51b5);
+  stroke-width: 2;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.mascot.covering .mascot-hand-left {
+  transform: translate(38px, -18px) rotate(12deg);
+}
+
+.mascot.covering .mascot-hand-right {
+  transform: translate(-38px, -18px) rotate(-12deg);
+}
+
+.mascot.covering.peeking .mascot-hand-left {
+  transform: translate(30px, -4px) rotate(8deg);
+}
+
+.mascot.covering.peeking .mascot-hand-right {
+  transform: translate(-30px, -4px) rotate(-8deg);
+}
+
+// Reduz movimento: tira o balanco continuo e as transicoes viram instantaneas,
+// mas o estado final (maos tapando o olho, pupila deslocada) continua igual.
+@media (prefers-reduced-motion: reduce) {
+  .mascot {
+    animation: none;
+  }
+
+  .mascot-hand,
+  .mascot-pupil {
+    transition: none;
+  }
+}

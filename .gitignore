@@ -1,0 +1,17 @@
+# Logs de processos rodados localmente durante o desenvolvimento
+*.log
+
+# Editores / IDEs
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Scratch files avulsos que não fazem parte do app
+backend/nf_check.txt

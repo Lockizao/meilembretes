@@ -1,0 +1,203 @@
+.push-banner {
+  margin-bottom: 16px;
+  background: #fff8e1;
+  border-radius: 12px;
+
+  mat-card-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: 32px;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  mat-icon {
+    color: var(--mat-sys-primary);
+  }
+}
+
+.page-heading-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+
+  .section-heading {
+    margin: 0;
+  }
+}
+
+.obligations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.obligation-card {
+  border-radius: 12px;
+  border-left: 4px solid transparent;
+  transition: box-shadow 0.15s ease;
+
+  &:hover {
+    box-shadow: var(--mat-sys-level2);
+  }
+
+  .obligation-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+  }
+
+  .competencia {
+    font-weight: 500;
+  }
+
+  .vencimento {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 0.9em;
+  }
+
+  .valor {
+    margin-top: 4px;
+    font-weight: 500;
+  }
+}
+
+// Faixa colorida na lateral do card, de acordo com o status - da pra ver o
+// que precisa de atencao so pela cor, sem precisar ler o texto do badge.
+.obligation-card:has(.status-atrasado) {
+  border-left-color: #c62828;
+}
+
+.obligation-card:has(.status-pendente) {
+  border-left-color: #f9a825;
+}
+
+.obligation-card:has(.status-concluido) {
+  border-left-color: #2e7d32;
+}
+
+.obligation-card:has(.status-cancelado) {
+  border-left-color: #9e9e9e;
+  opacity: 0.75;
+}
+
+// Badge de status: span simples em vez de mat-chip - o mat-chip desse
+// Material nao aceita cor de fundo customizada facilmente (a implementacao
+// M3 usa as proprias variaveis internas com prioridade maior).
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.8em;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-pendente {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-atrasado {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.status-concluido {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-cancelado {
+  background-color: #e2e3e5;
+  color: #383d41;
+}
+
+.summary-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.summary-card {
+  border-radius: 12px;
+  border-top: 3px solid var(--mat-sys-primary);
+
+  &.summary-card--alert {
+    border-top-color: #c62828;
+    background: #fff5f5;
+  }
+
+  .summary-label {
+    font-size: 0.8em;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  .summary-value {
+    font-size: 1.6em;
+    font-weight: 600;
+    margin-top: 4px;
+  }
+
+  .summary-sub {
+    margin-top: 4px;
+    font-size: 0.85em;
+    color: rgba(0, 0, 0, 0.6);
+  }
+}
+
+.section-title {
+  margin-top: 32px;
+}
+
+.obligation-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.nf-data-card {
+  margin-top: 12px;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 8px;
+
+  p {
+    margin: 4px 0;
+  }
+}
+
+.nf-data-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.nf-data-hint {
+  margin-top: 8px;
+  font-size: 0.85em;
+  color: rgba(0, 0, 0, 0.6);
+}

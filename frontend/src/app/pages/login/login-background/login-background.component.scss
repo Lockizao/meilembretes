@@ -1,0 +1,95 @@
+.login-background {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background: linear-gradient(160deg, #eef1fb 0%, #dee3f8 55%, #cfd8f5 100%);
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(50px);
+  opacity: 0.55;
+  transition: transform 0.2s ease-out;
+  will-change: transform;
+}
+
+.blob-a {
+  width: 320px;
+  height: 320px;
+  top: -100px;
+  left: -80px;
+  background: #7c8cf8;
+}
+
+.blob-b {
+  width: 280px;
+  height: 280px;
+  bottom: -100px;
+  right: -60px;
+  background: #ffb37b;
+}
+
+.blob-c {
+  width: 220px;
+  height: 220px;
+  top: 38%;
+  left: 58%;
+  background: #6de3c4;
+}
+
+.float-icon {
+  position: absolute;
+  font-size: 2.4rem;
+  opacity: 0.32;
+  transition: transform 0.2s ease-out;
+  will-change: transform;
+  user-select: none;
+}
+
+.icon-a {
+  top: 12%;
+  left: 10%;
+}
+
+.icon-b {
+  top: 68%;
+  left: 9%;
+}
+
+.icon-c {
+  top: 18%;
+  left: 84%;
+}
+
+.icon-d {
+  top: 74%;
+  left: 86%;
+  font-size: 2rem;
+}
+
+.icon-e {
+  top: 45%;
+  left: 46%;
+  font-size: 1.8rem;
+}
+
+@media (max-width: 640px) {
+  .float-icon {
+    font-size: 1.8rem;
+  }
+
+  .icon-d,
+  .icon-e {
+    font-size: 1.4rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blob,
+  .float-icon {
+    transition: none;
+  }
+}

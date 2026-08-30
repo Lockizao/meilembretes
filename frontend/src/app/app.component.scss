@@ -1,0 +1,51 @@
+// A partir do Material 3 "system-level theming" (mat.theme), o input
+// color="primary" do <mat-toolbar> nao pinta mais o fundo sozinho (isso so
+// funcionava no tema M2 antigo/prebuilt) - por isso aplicamos a cor direto
+// usando as mesmas variaveis CSS que o tema gera.
+mat-toolbar {
+  background: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+
+  // Os botoes do Material definem a propria cor do texto internamente (nao
+  // herdam do elemento pai), entao "color" no mat-toolbar sozinho nao pinta
+  // os links/botoes de branco - precisa forcar explicitamente aqui.
+  ::ng-deep .mdc-button__label,
+  a.mat-mdc-button,
+  button.mat-mdc-button,
+  button.mat-mdc-icon-button .mat-icon {
+    color: var(--mat-sys-on-primary) !important;
+  }
+}
+
+.title {
+  font-weight: 500;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.nav-menu-trigger {
+  display: none;
+}
+
+// Telas pequenas: esconde os links e mostra o menu hamburguer.
+@media (max-width: 640px) {
+  .nav-links {
+    display: none;
+  }
+
+  .nav-menu-trigger {
+    display: inline-flex;
+  }
+}
+
+.content {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 16px;
+
+  @media (max-width: 640px) {
+    padding: 12px;
+  }
+}

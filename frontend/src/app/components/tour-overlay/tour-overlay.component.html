@@ -1,0 +1,27 @@
+@if (tour.active()) {
+  <div class="tour-click-blocker"></div>
+
+  @if (rect(); as r) {
+    <div class="tour-spotlight" [ngStyle]="spotlightStyle()"></div>
+  } @else {
+    <div class="tour-dim"></div>
+  }
+
+  @if (currentStep(); as step) {
+    <div class="tour-card" [ngStyle]="cardStyle()" [class.tour-card--centered]="!rect()">
+      <div class="tour-card-progress">Passo {{ tour.stepIndex() + 1 }} de {{ tour.steps().length }}</div>
+      <h3 class="tour-card-title">{{ step.title }}</h3>
+      <p class="tour-card-description">{{ step.description }}</p>
+      <div class="tour-card-actions">
+        <button mat-button (click)="tour.skip()">Pular</button>
+        <span class="tour-card-spacer"></span>
+        @if (tour.stepIndex() > 0) {
+          <button mat-stroked-button (click)="tour.prev()">Voltar</button>
+        }
+        <button mat-flat-button color="primary" (click)="tour.next()">
+          {{ isLastStep() ? 'Concluir' : 'Próximo' }}
+        </button>
+      </div>
+    </div>
+  }
+}

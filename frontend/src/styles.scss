@@ -1,0 +1,40 @@
+@use '@angular/material' as mat;
+
+// Tema customizado (Material 3) - troca a paleta prebuilt indigo-pink por uma
+// combinacao mais "financeira/profissional": azul petroleo como cor principal
+// e laranja como destaque (botoes de atencao, links).
+html {
+  @include mat.core();
+  @include mat.theme(
+    (
+      color: (
+        theme-type: light,
+        primary: mat.$azure-palette,
+        tertiary: mat.$orange-palette,
+      ),
+      typography: Roboto,
+      density: 0,
+    )
+  );
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  background: #f6f7f9;
+}
+
+// Espacamento consistente entre os <h1> de secao e o conteudo logo abaixo,
+// e entre secoes (dashboard/settings usam varias secoes empilhadas).
+h1 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 12px;
+}
+
+// Cards mais arredondados em todo o app (o padrao do Material e meio "quadrado").
+.mat-mdc-card {
+  border-radius: 12px !important;
+}

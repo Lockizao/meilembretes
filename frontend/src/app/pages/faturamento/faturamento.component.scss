@@ -1,0 +1,42 @@
+.ano-field {
+  width: 140px;
+  display: block;
+  margin-bottom: 16px;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: 32px;
+}
+
+.total-card {
+  margin-bottom: 16px;
+
+  .total-label {
+    font-size: 0.85em;
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  .total-value {
+    font-size: 2em;
+    font-weight: 600;
+    margin: 4px 0 8px;
+  }
+
+  .hint {
+    font-size: 0.85em;
+    color: rgba(0, 0, 0, 0.6);
+    margin-bottom: 12px;
+  }
+}
+
+.meses-table {
+  width: 100%;
+  overflow-x: auto;
+  display: block;
+
+  @media (min-width: 480px) {
+    display: table;
+  }
+}
