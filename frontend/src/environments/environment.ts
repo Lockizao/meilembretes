@@ -2,5 +2,5 @@
 // Ajuste `apiUrl` para a URL real do backend antes de publicar em produção.
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:8000',
+  apiUrl: 'https://meilembretes.onrender.com',
 };
