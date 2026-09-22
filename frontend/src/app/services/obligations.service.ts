@@ -54,6 +54,10 @@ export class ObligationsService {
     return this.patch(id, { status: 'PENDENTE' });
   }
 
+  updateValor(id: number, valor: number): Observable<Obligation> {
+    return this.patch(id, { valor });
+  }
+
   getNfData(id: number): Observable<NfData> {
     return this.http.get<NfData>(`${this.baseUrl}/obligations/${id}/nf-data`, {
       withCredentials: true,

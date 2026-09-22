@@ -82,6 +82,7 @@ export interface Obligation {
 export interface ObligationPatch {
   status?: 'CONCLUIDO' | 'PENDENTE';
   observacoes?: string;
+  valor?: number;
 }
 
 export interface ObligationsQuery {

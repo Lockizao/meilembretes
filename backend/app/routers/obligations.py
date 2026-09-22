@@ -125,6 +125,9 @@ async def patch_obligation(
     if body.observacoes is not None:
         obligation.observacoes = body.observacoes
 
+    if body.valor is not None:
+        obligation.valor = body.valor
+
     await db.flush()
 
     # Ao concluir uma emissao de NF, gera/atualiza automaticamente o

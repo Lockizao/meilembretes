@@ -124,6 +124,7 @@ class ObligationOut(BaseModel):
 class ObligationPatch(BaseModel):
     status: str | None = None
     observacoes: str | None = None
+    valor: float | None = None
 
 
 # ---------- Push ----------

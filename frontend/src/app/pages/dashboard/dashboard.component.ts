@@ -1,8 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterLink } from '@angular/router';
@@ -74,10 +77,13 @@ const DASHBOARD_TOUR_STEPS: TourStep[] = [
   selector: 'app-dashboard',
   imports: [
     CommonModule,
+    FormsModule,
     RouterLink,
     MatCardModule,
     MatButtonModule,
+    MatFormFieldModule,
     MatIconModule,
+    MatInputModule,
     MatProgressSpinnerModule,
   ],
   templateUrl: './dashboard.component.html',
@@ -95,6 +101,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   readonly expandedNfId = signal<number | null>(null);
   readonly nfDataById = signal<Record<number, NfData>>({});
   readonly loadingNfDataId = signal<number | null>(null);
+
+  readonly editingValorId = signal<number | null>(null);
+  readonly valorEdit = signal<number | null>(null);
+  readonly savingValorId = signal<number | null>(null);
 
   readonly rtObligations = signal<Obligation[]>([]);
   readonly rtLoading = signal(true);
@@ -410,6 +420,43 @@ export class DashboardComponent implements OnInit, OnDestroy {
       error: () => {
         this.cancelingId.set(null);
         this.snackBar.open('Não foi possível cancelar. Tente novamente.', 'Fechar', {
+          duration: 5000,
+        });
+      },
+    });
+  }
+
+  startEditValor(obligation: Obligation): void {
+    this.editingValorId.set(obligation.id);
+    this.valorEdit.set(obligation.valor);
+  }
+
+  cancelEditValor(): void {
+    this.editingValorId.set(null);
+    this.valorEdit.set(null);
+  }
+
+  saveValor(obligation: Obligation): void {
+    const novoValor = this.valorEdit();
+    if (novoValor === null || novoValor < 0) {
+      this.snackBar.open('Informe um valor válido.', 'Fechar', { duration: 3000 });
+      return;
+    }
+    this.savingValorId.set(obligation.id);
+    this.obligationsService.updateValor(obligation.id, novoValor).subscribe({
+      next: (updated) => {
+        this.nfObligations.update((list) =>
+          list.map((item) => (item.id === updated.id ? updated : item)),
+        );
+        this.savingValorId.set(null);
+        this.editingValorId.set(null);
+        this.valorEdit.set(null);
+        this.loadFaturamento();
+        this.snackBar.open('Valor atualizado.', 'Fechar', { duration: 3000 });
+      },
+      error: () => {
+        this.savingValorId.set(null);
+        this.snackBar.open('Não foi possível atualizar o valor. Tente novamente.', 'Fechar', {
           duration: 5000,
         });
       },

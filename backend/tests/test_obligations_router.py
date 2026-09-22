@@ -92,6 +92,29 @@ async def test_patch_status_pendente_limpa_concluido_em(db_session, test_user, c
     assert body["concluido_em"] is None
 
 
+async def test_patch_valor_corrige_valor_da_instancia(db_session, test_user, client):
+    """Mes parcial (ex: primeiro mes de contrato) pode ter um valor diferente
+    do `valor_mensal` padrao usado na criacao da instancia - o usuario precisa
+    poder corrigir manualmente."""
+    instance = ObligationInstance(
+        user_id=test_user.id,
+        tipo=TipoObrigacao.NF_EMISSAO,
+        competencia=date(2026, 8, 1),
+        data_vencimento=date(2026, 8, 5),
+        valor=3000.0,
+        status=StatusObrigacao.CONCLUIDO,
+    )
+    db_session.add(instance)
+    await db_session.commit()
+    await db_session.refresh(instance)
+
+    resp = await client.patch(f"/obligations/{instance.id}", json={"valor": 733.33})
+
+    assert resp.status_code == 200
+    body = resp.json()
+    assert body["valor"] == 733.33
+
+
 async def test_cancelar_obrigacao_que_nao_e_nf_da_erro(db_session, test_user, client):
     instance = ObligationInstance(
         user_id=test_user.id,

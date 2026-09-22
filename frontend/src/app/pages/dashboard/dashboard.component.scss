@@ -74,6 +74,17 @@
     margin-top: 4px;
     font-weight: 500;
   }
+
+  .valor-edit {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 4px;
+
+    mat-form-field {
+      width: 120px;
+    }
+  }
 }
 
 // Faixa colorida na lateral do card, de acordo com o status - da pra ver o
